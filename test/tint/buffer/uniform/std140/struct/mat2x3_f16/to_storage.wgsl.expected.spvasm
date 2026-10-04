@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.3
 ; Generator: Google Tint Compiler; 1
-; Bound: 174
+; Bound: 166
 ; Schema: 0
                OpCapability Shader
                OpCapability Float16
@@ -29,7 +29,6 @@
                OpName %start_byte_offset "start_byte_offset"
                OpName %start_byte_offset_0 "start_byte_offset"
                OpName %start_byte_offset_1 "start_byte_offset"
-               OpName %a "a"
                OpDecorate %_arr_v4uint_uint_32 ArrayStride 16
                OpMemberDecorate %u_block_tint_explicit_layout 0 Offset 0
                OpDecorate %u_block_tint_explicit_layout Block
@@ -95,8 +94,8 @@
         %132 = OpTypeFunction %S %uint
     %uint_64 = OpConstant %uint 64
         %154 = OpTypeFunction %_arr_S_uint_4_0 %uint
-        %157 = OpConstantNull %_arr_S_uint_4_0
    %uint_128 = OpConstant %uint 128
+   %uint_384 = OpConstant %uint 384
           %f = OpFunction %void None %20
          %21 = OpLabel
          %22 = OpFunctionCall %_arr_S_uint_4_0 %24 %uint_0
@@ -231,32 +230,13 @@
          %24 = OpFunction %_arr_S_uint_4_0 None %154
 %start_byte_offset_1 = OpFunctionParameter %uint
         %155 = OpLabel
-          %a = OpVariable %_ptr_Function__arr_S_uint_4_0 Function
-               OpStore %a %157
-               OpBranch %158
-        %158 = OpLabel
-               OpBranch %161
-        %161 = OpLabel
-        %163 = OpPhi %uint %uint_0 %158 %164 %160
-               OpLoopMerge %162 %160 None
-               OpBranch %159
-        %159 = OpLabel
-        %166 = OpUGreaterThanEqual %bool %163 %uint_4
-               OpSelectionMerge %167 None
-               OpBranchConditional %166 %168 %167
-        %168 = OpLabel
-               OpBranch %162
-        %167 = OpLabel
-        %169 = OpIMul %uint %163 %uint_128
-        %171 = OpIAdd %uint %start_byte_offset_1 %169
-        %172 = OpAccessChain %_ptr_Function_S %a %163
-        %173 = OpFunctionCall %S %29 %171
-               OpStore %172 %173 None
-               OpBranch %160
-        %160 = OpLabel
-        %164 = OpIAdd %uint %163 %uint_1
-               OpBranch %161
-        %162 = OpLabel
-        %165 = OpLoad %_arr_S_uint_4_0 %a None
+        %156 = OpFunctionCall %S %29 %start_byte_offset_1
+        %157 = OpIAdd %uint %uint_128 %start_byte_offset_1
+        %159 = OpFunctionCall %S %29 %157
+        %160 = OpIAdd %uint %uint_256 %start_byte_offset_1
+        %161 = OpFunctionCall %S %29 %160
+        %162 = OpIAdd %uint %uint_384 %start_byte_offset_1
+        %164 = OpFunctionCall %S %29 %162
+        %165 = OpCompositeConstruct %_arr_S_uint_4_0 %156 %159 %161 %164
                OpReturnValue %165
                OpFunctionEnd

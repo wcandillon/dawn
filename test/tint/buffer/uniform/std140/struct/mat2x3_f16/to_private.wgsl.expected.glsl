@@ -32,22 +32,10 @@ S v_6(uint start_byte_offset) {
   return S(v_8, v_9, int(v_11[((v_10 & 15u) >> 2u)]));
 }
 S[4] v_12(uint start_byte_offset) {
-  S a[4] = S[4](S(0, f16mat2x3(f16vec3(0.0hf), f16vec3(0.0hf)), 0), S(0, f16mat2x3(f16vec3(0.0hf), f16vec3(0.0hf)), 0), S(0, f16mat2x3(f16vec3(0.0hf), f16vec3(0.0hf)), 0), S(0, f16mat2x3(f16vec3(0.0hf), f16vec3(0.0hf)), 0));
-  {
-    uint v_13 = 0u;
-    v_13 = 0u;
-    while(true) {
-      uint v_14 = v_13;
-      if ((v_14 >= 4u)) {
-        break;
-      }
-      a[v_14] = v_6((start_byte_offset + (v_14 * 128u)));
-      {
-        v_13 = (v_14 + 1u);
-      }
-    }
-  }
-  return a;
+  S v_13 = v_6(start_byte_offset);
+  S v_14 = v_6((128u + start_byte_offset));
+  S v_15 = v_6((256u + start_byte_offset));
+  return S[4](v_13, v_14, v_15, v_6((384u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {

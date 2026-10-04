@@ -35,31 +35,19 @@ float4x2 v_1(uint start_byte_offset) {
 
 typedef float4x2 ary_ret[4];
 ary_ret v_12(uint start_byte_offset) {
-  float4x2 a_2[4] = (float4x2[4])0;
-  {
-    uint v_13 = 0u;
-    v_13 = 0u;
-    while(true) {
-      uint v_14 = v_13;
-      if ((v_14 >= 4u)) {
-        break;
-      }
-      a_2[v_14] = v_1((start_byte_offset + (v_14 * 32u)));
-      {
-        v_13 = (v_14 + 1u);
-      }
-    }
-  }
-  float4x2 v_15[4] = a_2;
-  return v_15;
+  float4x2 v_13 = v_1(start_byte_offset);
+  float4x2 v_14 = v_1((32u + start_byte_offset));
+  float4x2 v_15 = v_1((64u + start_byte_offset));
+  float4x2 v_16[4] = {v_13, v_14, v_15, v_1((96u + start_byte_offset))};
+  return v_16;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  float4x2 v_16[4] = v_12(0u);
-  float v_17 = a(v_16);
-  float v_18 = (v_17 + b(v_1(32u)));
-  float v_19 = (v_18 + c(asfloat(u[2u].xy).yx));
-  s.Store(0u, asuint((v_19 + d(asfloat(u[2u].y)))));
+  float4x2 v_17[4] = v_12(0u);
+  float v_18 = a(v_17);
+  float v_19 = (v_18 + b(v_1(32u)));
+  float v_20 = (v_19 + c(asfloat(u[2u].xy).yx));
+  s.Store(0u, asuint((v_20 + d(asfloat(u[2u].y)))));
 }
 

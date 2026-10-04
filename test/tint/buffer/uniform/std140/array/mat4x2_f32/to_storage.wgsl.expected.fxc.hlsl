@@ -43,29 +43,17 @@ void v_12(uint offset, float4x2 obj[4]) {
 
 typedef float4x2 ary_ret[4];
 ary_ret v_15(uint start_byte_offset) {
-  float4x2 a[4] = (float4x2[4])0;
-  {
-    uint v_16 = 0u;
-    v_16 = 0u;
-    while(true) {
-      uint v_17 = v_16;
-      if ((v_17 >= 4u)) {
-        break;
-      }
-      a[v_17] = v_1((start_byte_offset + (v_17 * 32u)));
-      {
-        v_16 = (v_17 + 1u);
-      }
-    }
-  }
-  float4x2 v_18[4] = a;
-  return v_18;
+  float4x2 v_16 = v_1(start_byte_offset);
+  float4x2 v_17 = v_1((32u + start_byte_offset));
+  float4x2 v_18 = v_1((64u + start_byte_offset));
+  float4x2 v_19[4] = {v_16, v_17, v_18, v_1((96u + start_byte_offset))};
+  return v_19;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  float4x2 v_19[4] = v_15(0u);
-  v_12(0u, v_19);
+  float4x2 v_20[4] = v_15(0u);
+  v_12(0u, v_20);
   v(32u, v_1(64u));
   s.Store2(32u, asuint(asfloat(u[0u].zw).yx));
   s.Store(32u, asuint(asfloat(u[0u].z)));

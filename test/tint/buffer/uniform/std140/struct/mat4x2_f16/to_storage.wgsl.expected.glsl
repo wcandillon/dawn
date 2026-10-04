@@ -77,22 +77,10 @@ void tint_store_and_preserve_padding(S value_param[4]) {
   }
 }
 S[4] v_17(uint start_byte_offset) {
-  S a[4] = S[4](S(0, f16mat4x2(f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf)), 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, f16mat4x2(f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf)), 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, f16mat4x2(f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf)), 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, f16mat4x2(f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf), f16vec2(0.0hf)), 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init));
-  {
-    uint v_18 = 0u;
-    v_18 = 0u;
-    while(true) {
-      uint v_19 = v_18;
-      if ((v_19 >= 4u)) {
-        break;
-      }
-      a[v_19] = v_9((start_byte_offset + (v_19 * 128u)));
-      {
-        v_18 = (v_19 + 1u);
-      }
-    }
-  }
-  return a;
+  S v_18 = v_9(start_byte_offset);
+  S v_19 = v_9((128u + start_byte_offset));
+  S v_20 = v_9((256u + start_byte_offset));
+  return S[4](v_18, v_19, v_20, v_9((384u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {

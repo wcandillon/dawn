@@ -43,58 +43,34 @@ Inner v_12(uint start_byte_offset) {
 
 typedef Inner ary_ret[4];
 ary_ret v_14(uint start_byte_offset) {
-  Inner a_2[4] = (Inner[4])0;
-  {
-    uint v_15 = 0u;
-    v_15 = 0u;
-    while(true) {
-      uint v_16 = v_15;
-      if ((v_16 >= 4u)) {
-        break;
-      }
-      Inner v_17 = v_12((start_byte_offset + (v_16 * 64u)));
-      a_2[v_16] = v_17;
-      {
-        v_15 = (v_16 + 1u);
-      }
-    }
-  }
-  Inner v_18[4] = a_2;
-  return v_18;
+  Inner v_15 = v_12(start_byte_offset);
+  Inner v_16 = v_12((64u + start_byte_offset));
+  Inner v_17 = v_12((128u + start_byte_offset));
+  Inner v_18 = v_12((192u + start_byte_offset));
+  Inner v_19[4] = {v_15, v_16, v_17, v_18};
+  return v_19;
 }
 
-Outer v_19(uint start_byte_offset) {
-  Inner v_20[4] = v_14(start_byte_offset);
-  Outer v_21 = {v_20};
-  return v_21;
+Outer v_20(uint start_byte_offset) {
+  Inner v_21[4] = v_14(start_byte_offset);
+  Outer v_22 = {v_21};
+  return v_22;
 }
 
 typedef Outer ary_ret_1[4];
-ary_ret_1 v_22(uint start_byte_offset) {
-  Outer a_1[4] = (Outer[4])0;
-  {
-    uint v_23 = 0u;
-    v_23 = 0u;
-    while(true) {
-      uint v_24 = v_23;
-      if ((v_24 >= 4u)) {
-        break;
-      }
-      Outer v_25 = v_19((start_byte_offset + (v_24 * 256u)));
-      a_1[v_24] = v_25;
-      {
-        v_23 = (v_24 + 1u);
-      }
-    }
-  }
-  Outer v_26[4] = a_1;
-  return v_26;
+ary_ret_1 v_23(uint start_byte_offset) {
+  Outer v_24 = v_20(start_byte_offset);
+  Outer v_25 = v_20((256u + start_byte_offset));
+  Outer v_26 = v_20((512u + start_byte_offset));
+  Outer v_27 = v_20((768u + start_byte_offset));
+  Outer v_28[4] = {v_24, v_25, v_26, v_27};
+  return v_28;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  Outer l_a[4] = v_22(0u);
-  Outer l_a_3 = v_19(768u);
+  Outer l_a[4] = v_23(0u);
+  Outer l_a_3 = v_20(768u);
   Inner l_a_3_a[4] = v_14(768u);
   Inner l_a_3_a_2 = v_12(896u);
   matrix<float16_t, 4, 4> l_a_3_a_2_m = v_1(896u);

@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.3
 ; Generator: Google Tint Compiler; 1
-; Bound: 112
+; Bound: 101
 ; Schema: 0
                OpCapability Shader
                OpMemoryModel Logical GLSL450
@@ -22,7 +22,6 @@
                OpName %f_0 "f"
                OpName %start_byte_offset "start_byte_offset"
                OpName %start_byte_offset_0 "start_byte_offset"
-               OpName %a_1 "a"
                OpDecorate %_arr_v4uint_uint_16 ArrayStride 16
                OpMemberDecorate %u_block_tint_explicit_layout 0 Offset 0
                OpDecorate %u_block_tint_explicit_layout Block
@@ -63,11 +62,8 @@
     %uint_32 = OpConstant %uint 32
     %uint_48 = OpConstant %uint 48
          %89 = OpTypeFunction %_arr_mat4v4float_uint_4 %uint
-%_ptr_Function__arr_mat4v4float_uint_4 = OpTypePointer Function %_arr_mat4v4float_uint_4
-         %93 = OpConstantNull %_arr_mat4v4float_uint_4
-       %bool = OpTypeBool
-%_ptr_Function_mat4v4float = OpTypePointer Function %mat4v4float
-     %uint_1 = OpConstant %uint 1
+   %uint_128 = OpConstant %uint 128
+   %uint_192 = OpConstant %uint 192
           %a = OpFunction %float None %18
         %a_0 = OpFunctionParameter %_arr_mat4v4float_uint_4
          %19 = OpLabel
@@ -142,32 +138,13 @@
          %40 = OpFunction %_arr_mat4v4float_uint_4 None %89
 %start_byte_offset_0 = OpFunctionParameter %uint
          %90 = OpLabel
-        %a_1 = OpVariable %_ptr_Function__arr_mat4v4float_uint_4 Function
-               OpStore %a_1 %93
-               OpBranch %94
-         %94 = OpLabel
-               OpBranch %97
-         %97 = OpLabel
-         %99 = OpPhi %uint %uint_0 %94 %100 %96
-               OpLoopMerge %98 %96 None
-               OpBranch %95
-         %95 = OpLabel
-        %102 = OpUGreaterThanEqual %bool %99 %uint_4
-               OpSelectionMerge %104 None
-               OpBranchConditional %102 %105 %104
-        %105 = OpLabel
-               OpBranch %98
-        %104 = OpLabel
-        %106 = OpIMul %uint %99 %uint_64
-        %107 = OpIAdd %uint %start_byte_offset_0 %106
-        %108 = OpAccessChain %_ptr_Function_mat4v4float %a_1 %99
-        %110 = OpFunctionCall %mat4v4float %44 %107
-               OpStore %108 %110 None
-               OpBranch %96
-         %96 = OpLabel
-        %100 = OpIAdd %uint %99 %uint_1
-               OpBranch %97
-         %98 = OpLabel
-        %101 = OpLoad %_arr_mat4v4float_uint_4 %a_1 None
-               OpReturnValue %101
+         %91 = OpFunctionCall %mat4v4float %44 %start_byte_offset_0
+         %92 = OpIAdd %uint %uint_64 %start_byte_offset_0
+         %93 = OpFunctionCall %mat4v4float %44 %92
+         %94 = OpIAdd %uint %uint_128 %start_byte_offset_0
+         %96 = OpFunctionCall %mat4v4float %44 %94
+         %97 = OpIAdd %uint %uint_192 %start_byte_offset_0
+         %99 = OpFunctionCall %mat4v4float %44 %97
+        %100 = OpCompositeConstruct %_arr_mat4v4float_uint_4 %91 %93 %96 %99
+               OpReturnValue %100
                OpFunctionEnd

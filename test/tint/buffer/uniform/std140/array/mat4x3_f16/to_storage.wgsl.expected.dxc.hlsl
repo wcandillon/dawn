@@ -55,29 +55,17 @@ void v_13(uint offset, matrix<float16_t, 4, 3> obj[4]) {
 
 typedef matrix<float16_t, 4, 3> ary_ret[4];
 ary_ret v_16(uint start_byte_offset) {
-  matrix<float16_t, 4, 3> a[4] = (matrix<float16_t, 4, 3>[4])0;
-  {
-    uint v_17 = 0u;
-    v_17 = 0u;
-    while(true) {
-      uint v_18 = v_17;
-      if ((v_18 >= 4u)) {
-        break;
-      }
-      a[v_18] = v_2((start_byte_offset + (v_18 * 32u)));
-      {
-        v_17 = (v_18 + 1u);
-      }
-    }
-  }
-  matrix<float16_t, 4, 3> v_19[4] = a;
-  return v_19;
+  matrix<float16_t, 4, 3> v_17 = v_2(start_byte_offset);
+  matrix<float16_t, 4, 3> v_18 = v_2((32u + start_byte_offset));
+  matrix<float16_t, 4, 3> v_19 = v_2((64u + start_byte_offset));
+  matrix<float16_t, 4, 3> v_20[4] = {v_17, v_18, v_19, v_2((96u + start_byte_offset))};
+  return v_20;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  matrix<float16_t, 4, 3> v_20[4] = v_16(0u);
-  v_13(0u, v_20);
+  matrix<float16_t, 4, 3> v_21[4] = v_16(0u);
+  v_13(0u, v_21);
   v_1(32u, v_2(64u));
   s.Store<vector<float16_t, 3> >(32u, tint_bitcast_to_f16_1(u[0u].zw).xyz.zxy);
   s.Store<float16_t>(32u, tint_bitcast_to_f16(u[0u].z).x);

@@ -24,35 +24,23 @@ S v_2(uint start_byte_offset) {
   return S(v_4, v_5, int(v_7[((v_6 & 15u) >> 2u)]));
 }
 S[4] v_8(uint start_byte_offset) {
-  S a[4] = S[4](S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0), S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0), S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0), S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0));
-  {
-    uint v_9 = 0u;
-    v_9 = 0u;
-    while(true) {
-      uint v_10 = v_9;
-      if ((v_10 >= 4u)) {
-        break;
-      }
-      a[v_10] = v_2((start_byte_offset + (v_10 * 128u)));
-      {
-        v_9 = (v_10 + 1u);
-      }
-    }
-  }
-  return a;
+  S v_9 = v_2(start_byte_offset);
+  S v_10 = v_2((128u + start_byte_offset));
+  S v_11 = v_2((256u + start_byte_offset));
+  return S[4](v_9, v_10, v_11, v_2((384u + start_byte_offset)));
 }
 void f_inner(uint tint_local_index) {
   {
-    uint v_11 = 0u;
-    v_11 = tint_local_index;
+    uint v_12 = 0u;
+    v_12 = tint_local_index;
     while(true) {
-      uint v_12 = v_11;
-      if ((v_12 >= 4u)) {
+      uint v_13 = v_12;
+      if ((v_13 >= 4u)) {
         break;
       }
-      w[v_12] = S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0);
+      w[v_13] = S(0, mat3x4(vec4(0.0f), vec4(0.0f), vec4(0.0f)), 0);
       {
-        v_11 = (v_12 + 1u);
+        v_12 = (v_13 + 1u);
       }
     }
   }

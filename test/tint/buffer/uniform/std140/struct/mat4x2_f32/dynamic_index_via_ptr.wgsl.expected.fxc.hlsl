@@ -37,68 +37,44 @@ Inner v_11(uint start_byte_offset) {
 
 typedef Inner ary_ret[4];
 ary_ret v_13(uint start_byte_offset) {
-  Inner a_2[4] = (Inner[4])0;
-  {
-    uint v_14 = 0u;
-    v_14 = 0u;
-    while(true) {
-      uint v_15 = v_14;
-      if ((v_15 >= 4u)) {
-        break;
-      }
-      Inner v_16 = v_11((start_byte_offset + (v_15 * 64u)));
-      a_2[v_15] = v_16;
-      {
-        v_14 = (v_15 + 1u);
-      }
-    }
-  }
-  Inner v_17[4] = a_2;
-  return v_17;
+  Inner v_14 = v_11(start_byte_offset);
+  Inner v_15 = v_11((64u + start_byte_offset));
+  Inner v_16 = v_11((128u + start_byte_offset));
+  Inner v_17 = v_11((192u + start_byte_offset));
+  Inner v_18[4] = {v_14, v_15, v_16, v_17};
+  return v_18;
 }
 
-Outer v_18(uint start_byte_offset) {
-  Inner v_19[4] = v_13(start_byte_offset);
-  Outer v_20 = {v_19};
-  return v_20;
+Outer v_19(uint start_byte_offset) {
+  Inner v_20[4] = v_13(start_byte_offset);
+  Outer v_21 = {v_20};
+  return v_21;
 }
 
 typedef Outer ary_ret_1[4];
-ary_ret_1 v_21(uint start_byte_offset) {
-  Outer a_1[4] = (Outer[4])0;
-  {
-    uint v_22 = 0u;
-    v_22 = 0u;
-    while(true) {
-      uint v_23 = v_22;
-      if ((v_23 >= 4u)) {
-        break;
-      }
-      Outer v_24 = v_18((start_byte_offset + (v_23 * 256u)));
-      a_1[v_23] = v_24;
-      {
-        v_22 = (v_23 + 1u);
-      }
-    }
-  }
-  Outer v_25[4] = a_1;
-  return v_25;
+ary_ret_1 v_22(uint start_byte_offset) {
+  Outer v_23 = v_19(start_byte_offset);
+  Outer v_24 = v_19((256u + start_byte_offset));
+  Outer v_25 = v_19((512u + start_byte_offset));
+  Outer v_26 = v_19((768u + start_byte_offset));
+  Outer v_27[4] = {v_23, v_24, v_25, v_26};
+  return v_27;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  uint v_26 = (min(uint(i()), 3u) * 256u);
-  uint v_27 = (min(uint(i()), 3u) * 64u);
-  uint v_28 = (min(uint(i()), 3u) * 8u);
-  Outer l_a[4] = v_21(0u);
-  Outer l_a_i = v_18(v_26);
-  Inner l_a_i_a[4] = v_13(v_26);
-  Inner l_a_i_a_i = v_11((v_26 + v_27));
-  float4x2 l_a_i_a_i_m = v((v_26 + v_27));
-  uint v_29 = ((v_26 + v_27) + v_28);
-  uint4 v_30 = a[(v_29 / 16u)];
-  float2 l_a_i_a_i_m_i = asfloat((((((v_29 & 15u) >> 2u) == 2u)) ? (v_30.zw) : (v_30.xy)));
-  uint v_31 = (((v_26 + v_27) + v_28) + (min(uint(i()), 1u) * 4u));
-  float l_a_i_a_i_m_i_i = asfloat(a[(v_31 / 16u)][((v_31 & 15u) >> 2u)]);
+  uint v_28 = (min(uint(i()), 3u) * 256u);
+  uint v_29 = (min(uint(i()), 3u) * 64u);
+  uint v_30 = (min(uint(i()), 3u) * 8u);
+  Outer l_a[4] = v_22(0u);
+  Outer l_a_i = v_19(v_28);
+  Inner l_a_i_a[4] = v_13(v_28);
+  Inner l_a_i_a_i = v_11((v_28 + v_29));
+  float4x2 l_a_i_a_i_m = v((v_28 + v_29));
+  uint v_31 = ((v_28 + v_29) + v_30);
+  uint4 v_32 = a[(v_31 / 16u)];
+  float2 l_a_i_a_i_m_i = asfloat((((((v_31 & 15u) >> 2u) == 2u)) ? (v_32.zw) : (v_32.xy)));
+  uint v_33 = (((v_28 + v_29) + v_30) + (min(uint(i()), 1u) * 4u));
+  float l_a_i_a_i_m_i_i = asfloat(a[(v_33 / 16u)][((v_33 & 15u) >> 2u)]);
 }
 

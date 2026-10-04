@@ -26,29 +26,17 @@ matrix<float16_t, 2, 4> v_1(uint start_byte_offset) {
 
 typedef matrix<float16_t, 2, 4> ary_ret[4];
 ary_ret v_6(uint start_byte_offset) {
-  matrix<float16_t, 2, 4> a[4] = (matrix<float16_t, 2, 4>[4])0;
-  {
-    uint v_7 = 0u;
-    v_7 = 0u;
-    while(true) {
-      uint v_8 = v_7;
-      if ((v_8 >= 4u)) {
-        break;
-      }
-      a[v_8] = v_1((start_byte_offset + (v_8 * 16u)));
-      {
-        v_7 = (v_8 + 1u);
-      }
-    }
-  }
-  matrix<float16_t, 2, 4> v_9[4] = a;
-  return v_9;
+  matrix<float16_t, 2, 4> v_7 = v_1(start_byte_offset);
+  matrix<float16_t, 2, 4> v_8 = v_1((16u + start_byte_offset));
+  matrix<float16_t, 2, 4> v_9 = v_1((32u + start_byte_offset));
+  matrix<float16_t, 2, 4> v_10[4] = {v_7, v_8, v_9, v_1((48u + start_byte_offset))};
+  return v_10;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  matrix<float16_t, 2, 4> v_10[4] = v_6(0u);
-  p = v_10;
+  matrix<float16_t, 2, 4> v_11[4] = v_6(0u);
+  p = v_11;
   p[int(1)] = v_1(32u);
   p[int(1)][int(0)] = tint_bitcast_to_f16_1(u[0u].zw).ywxz;
   p[int(1)][int(0)].x = tint_bitcast_to_f16(u[0u].z).x;

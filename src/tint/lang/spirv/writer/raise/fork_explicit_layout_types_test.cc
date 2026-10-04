@@ -1990,30 +1990,12 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {
   $B3: {
-    %8:ptr<function, array<u32, 4>, read_write> = var undef
-    loop [i: $B4, b: $B5, c: $B6] {  # loop_1
-      $B4: {  # initializer
-        next_iteration 0u  # -> $B5
-      }
-      $B5 (%idx:u32): {  # body
-        %10:bool = gte %idx, 4u
-        if %10 [t: $B7] {  # if_1
-          $B7: {  # true
-            exit_loop  # loop_1
-          }
-        }
-        %11:u32 = access %tint_source, %idx
-        %12:ptr<function, u32, read_write> = access %8, %idx
-        store %12, %11
-        continue  # -> $B6
-      }
-      $B6: {  # continuing
-        %13:u32 = add %idx, 1u
-        next_iteration %13  # -> $B5
-      }
-    }
-    %14:array<u32, 4> = load %8
-    ret %14
+    %8:u32 = access %tint_source, 0u
+    %9:u32 = access %tint_source, 1u
+    %10:u32 = access %tint_source, 2u
+    %11:u32 = access %tint_source, 3u
+    %12:array<u32, 4> = construct %8, %9, %10, %11
+    ret %12
   }
 }
 )";
@@ -2064,59 +2046,99 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<spirv.explicit_layout_array<u32, 4, stride=4>, 3, stride=16>):array<array<u32, 4>, 3> {
   $B3: {
-    %8:ptr<function, array<array<u32, 4>, 3>, read_write> = var undef
+    %8:spirv.explicit_layout_array<u32, 4, stride=4> = access %tint_source, 0u
+    %9:array<u32, 4> = call %tint_convert_explicit_layout_1, %8
+    %11:spirv.explicit_layout_array<u32, 4, stride=4> = access %tint_source, 1u
+    %12:array<u32, 4> = call %tint_convert_explicit_layout_1, %11
+    %13:spirv.explicit_layout_array<u32, 4, stride=4> = access %tint_source, 2u
+    %14:array<u32, 4> = call %tint_convert_explicit_layout_1, %13
+    %15:array<array<u32, 4>, 3> = construct %9, %12, %14
+    ret %15
+  }
+}
+%tint_convert_explicit_layout_1 = func(%tint_source_1:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
+  $B4: {
+    %17:u32 = access %tint_source_1, 0u
+    %18:u32 = access %tint_source_1, 1u
+    %19:u32 = access %tint_source_1, 2u
+    %20:u32 = access %tint_source_1, 3u
+    %21:array<u32, 4> = construct %17, %18, %19, %20
+    ret %21
+  }
+}
+)";
+
+    Run(ForkExplicitLayoutTypes, SpvVersion::kSpv13);
+
+    EXPECT_EQ(expect, str());
+}
+
+// Test that arrays above the unrolling threshold are converted with a loop.
+TEST_F(SpirvWriter_ForkExplicitLayoutTypesTest, LoadFromStorage_LargeArray_Shared) {
+    auto* buffer = b.Var("buffer", ty.ptr<storage, array<u32, 9>>());
+    buffer->SetBindingPoint(0, 0);
+    mod.root_block->Append(buffer);
+
+    auto* func = b.Function("foo", ty.void_());
+    b.Append(func->Block(), [&] {
+        b.Var("local", b.Load(buffer));
+        b.Return(func);
+    });
+
+    auto* src = R"(
+$B1: {  # root
+  %buffer:ptr<storage, array<u32, 9>, read_write> = var undef @binding_point(0, 0)
+}
+
+%foo = func():void {
+  $B2: {
+    %3:array<u32, 9> = load %buffer
+    %local:ptr<function, array<u32, 9>, read_write> = var %3
+    ret
+  }
+}
+)";
+    EXPECT_EQ(src, str());
+
+    auto* expect = R"(
+$B1: {  # root
+  %buffer:ptr<storage, spirv.explicit_layout_array<u32, 9, stride=4>, read_write> = var undef @binding_point(0, 0)
+}
+
+%foo = func():void {
+  $B2: {
+    %3:spirv.explicit_layout_array<u32, 9, stride=4> = load %buffer
+    %4:array<u32, 9> = call %tint_convert_explicit_layout, %3
+    %local:ptr<function, array<u32, 9>, read_write> = var %4
+    ret
+  }
+}
+%tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<u32, 9, stride=4>):array<u32, 9> {
+  $B3: {
+    %8:ptr<function, array<u32, 9>, read_write> = var undef
     loop [i: $B4, b: $B5, c: $B6] {  # loop_1
       $B4: {  # initializer
         next_iteration 0u  # -> $B5
       }
       $B5 (%idx:u32): {  # body
-        %10:bool = gte %idx, 3u
+        %10:bool = gte %idx, 9u
         if %10 [t: $B7] {  # if_1
           $B7: {  # true
             exit_loop  # loop_1
           }
         }
-        %11:spirv.explicit_layout_array<u32, 4, stride=4> = access %tint_source, %idx
-        %12:array<u32, 4> = call %tint_convert_explicit_layout_1, %11
-        %14:ptr<function, array<u32, 4>, read_write> = access %8, %idx
-        store %14, %12
+        %11:u32 = access %tint_source, %idx
+        %12:ptr<function, u32, read_write> = access %8, %idx
+        store %12, %11
         continue  # -> $B6
       }
       $B6: {  # continuing
-        %15:u32 = add %idx, 1u
-        next_iteration %15  # -> $B5
+        %13:u32 = add %idx, 1u
+        next_iteration %13  # -> $B5
       }
     }
-    %16:array<array<u32, 4>, 3> = load %8
-    ret %16
-  }
-}
-%tint_convert_explicit_layout_1 = func(%tint_source_1:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
-  $B8: {
-    %18:ptr<function, array<u32, 4>, read_write> = var undef
-    loop [i: $B9, b: $B10, c: $B11] {  # loop_2
-      $B9: {  # initializer
-        next_iteration 0u  # -> $B10
-      }
-      $B10 (%idx_1:u32): {  # body
-        %20:bool = gte %idx_1, 4u
-        if %20 [t: $B12] {  # if_2
-          $B12: {  # true
-            exit_loop  # loop_2
-          }
-        }
-        %21:u32 = access %tint_source_1, %idx_1
-        %22:ptr<function, u32, read_write> = access %18, %idx_1
-        store %22, %21
-        continue  # -> $B11
-      }
-      $B11: {  # continuing
-        %23:u32 = add %idx_1, 1u
-        next_iteration %23  # -> $B10
-      }
-    }
-    %24:array<u32, 4> = load %18
-    ret %24
+    %14:array<u32, 9> = load %8
+    ret %14
   }
 }
 )";
@@ -2170,30 +2192,12 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:array<u32, 4>):spirv.explicit_layout_array<u32, 4, stride=4> {
   $B3: {
-    %8:ptr<function, spirv.explicit_layout_array<u32, 4, stride=4>, read_write> = var undef
-    loop [i: $B4, b: $B5, c: $B6] {  # loop_1
-      $B4: {  # initializer
-        next_iteration 0u  # -> $B5
-      }
-      $B5 (%idx:u32): {  # body
-        %10:bool = gte %idx, 4u
-        if %10 [t: $B7] {  # if_1
-          $B7: {  # true
-            exit_loop  # loop_1
-          }
-        }
-        %11:u32 = access %tint_source, %idx
-        %12:ptr<function, u32, read_write> = access %8, %idx
-        store %12, %11
-        continue  # -> $B6
-      }
-      $B6: {  # continuing
-        %13:u32 = add %idx, 1u
-        next_iteration %13  # -> $B5
-      }
-    }
-    %14:spirv.explicit_layout_array<u32, 4, stride=4> = load %8
-    ret %14
+    %8:u32 = access %tint_source, 0u
+    %9:u32 = access %tint_source, 1u
+    %10:u32 = access %tint_source, 2u
+    %11:u32 = access %tint_source, 3u
+    %12:spirv.explicit_layout_array<u32, 4, stride=4> = construct %8, %9, %10, %11
+    ret %12
   }
 }
 )";
@@ -2247,59 +2251,102 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:array<array<u32, 4>, 3>):spirv.explicit_layout_array<spirv.explicit_layout_array<u32, 4, stride=4>, 3, stride=16> {
   $B3: {
-    %8:ptr<function, spirv.explicit_layout_array<spirv.explicit_layout_array<u32, 4, stride=4>, 3, stride=16>, read_write> = var undef
+    %8:array<u32, 4> = access %tint_source, 0u
+    %9:spirv.explicit_layout_array<u32, 4, stride=4> = call %tint_convert_explicit_layout_1, %8
+    %11:array<u32, 4> = access %tint_source, 1u
+    %12:spirv.explicit_layout_array<u32, 4, stride=4> = call %tint_convert_explicit_layout_1, %11
+    %13:array<u32, 4> = access %tint_source, 2u
+    %14:spirv.explicit_layout_array<u32, 4, stride=4> = call %tint_convert_explicit_layout_1, %13
+    %15:spirv.explicit_layout_array<spirv.explicit_layout_array<u32, 4, stride=4>, 3, stride=16> = construct %9, %12, %14
+    ret %15
+  }
+}
+%tint_convert_explicit_layout_1 = func(%tint_source_1:array<u32, 4>):spirv.explicit_layout_array<u32, 4, stride=4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
+  $B4: {
+    %17:u32 = access %tint_source_1, 0u
+    %18:u32 = access %tint_source_1, 1u
+    %19:u32 = access %tint_source_1, 2u
+    %20:u32 = access %tint_source_1, 3u
+    %21:spirv.explicit_layout_array<u32, 4, stride=4> = construct %17, %18, %19, %20
+    ret %21
+  }
+}
+)";
+
+    Run(ForkExplicitLayoutTypes, SpvVersion::kSpv13);
+
+    EXPECT_EQ(expect, str());
+}
+
+// Test that arrays above the unrolling threshold are converted with a loop.
+TEST_F(SpirvWriter_ForkExplicitLayoutTypesTest, StoreToStorage_LargeArray_Shared) {
+    auto* buffer = b.Var("buffer", ty.ptr<storage, array<u32, 9>, read_write>());
+    buffer->SetBindingPoint(0, 0);
+    mod.root_block->Append(buffer);
+
+    auto* func = b.Function("foo", ty.void_());
+    b.Append(func->Block(), [&] {
+        auto* local = b.Var("local", ty.ptr<function, array<u32, 9>>());
+        b.Store(buffer, b.Load(local));
+        b.Return(func);
+    });
+
+    auto* src = R"(
+$B1: {  # root
+  %buffer:ptr<storage, array<u32, 9>, read_write> = var undef @binding_point(0, 0)
+}
+
+%foo = func():void {
+  $B2: {
+    %local:ptr<function, array<u32, 9>, read_write> = var undef
+    %4:array<u32, 9> = load %local
+    store %buffer, %4
+    ret
+  }
+}
+)";
+    EXPECT_EQ(src, str());
+
+    auto* expect = R"(
+$B1: {  # root
+  %buffer:ptr<storage, spirv.explicit_layout_array<u32, 9, stride=4>, read_write> = var undef @binding_point(0, 0)
+}
+
+%foo = func():void {
+  $B2: {
+    %local:ptr<function, array<u32, 9>, read_write> = var undef
+    %4:array<u32, 9> = load %local
+    %5:spirv.explicit_layout_array<u32, 9, stride=4> = call %tint_convert_explicit_layout, %4
+    store %buffer, %5
+    ret
+  }
+}
+%tint_convert_explicit_layout = func(%tint_source:array<u32, 9>):spirv.explicit_layout_array<u32, 9, stride=4> {
+  $B3: {
+    %8:ptr<function, spirv.explicit_layout_array<u32, 9, stride=4>, read_write> = var undef
     loop [i: $B4, b: $B5, c: $B6] {  # loop_1
       $B4: {  # initializer
         next_iteration 0u  # -> $B5
       }
       $B5 (%idx:u32): {  # body
-        %10:bool = gte %idx, 3u
+        %10:bool = gte %idx, 9u
         if %10 [t: $B7] {  # if_1
           $B7: {  # true
             exit_loop  # loop_1
           }
         }
-        %11:array<u32, 4> = access %tint_source, %idx
-        %12:spirv.explicit_layout_array<u32, 4, stride=4> = call %tint_convert_explicit_layout_1, %11
-        %14:ptr<function, spirv.explicit_layout_array<u32, 4, stride=4>, read_write> = access %8, %idx
-        store %14, %12
+        %11:u32 = access %tint_source, %idx
+        %12:ptr<function, u32, read_write> = access %8, %idx
+        store %12, %11
         continue  # -> $B6
       }
       $B6: {  # continuing
-        %15:u32 = add %idx, 1u
-        next_iteration %15  # -> $B5
+        %13:u32 = add %idx, 1u
+        next_iteration %13  # -> $B5
       }
     }
-    %16:spirv.explicit_layout_array<spirv.explicit_layout_array<u32, 4, stride=4>, 3, stride=16> = load %8
-    ret %16
-  }
-}
-%tint_convert_explicit_layout_1 = func(%tint_source_1:array<u32, 4>):spirv.explicit_layout_array<u32, 4, stride=4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
-  $B8: {
-    %18:ptr<function, spirv.explicit_layout_array<u32, 4, stride=4>, read_write> = var undef
-    loop [i: $B9, b: $B10, c: $B11] {  # loop_2
-      $B9: {  # initializer
-        next_iteration 0u  # -> $B10
-      }
-      $B10 (%idx_1:u32): {  # body
-        %20:bool = gte %idx_1, 4u
-        if %20 [t: $B12] {  # if_2
-          $B12: {  # true
-            exit_loop  # loop_2
-          }
-        }
-        %21:u32 = access %tint_source_1, %idx_1
-        %22:ptr<function, u32, read_write> = access %18, %idx_1
-        store %22, %21
-        continue  # -> $B11
-      }
-      $B11: {  # continuing
-        %23:u32 = add %idx_1, 1u
-        next_iteration %23  # -> $B10
-      }
-    }
-    %24:spirv.explicit_layout_array<u32, 4, stride=4> = load %18
-    ret %24
+    %14:spirv.explicit_layout_array<u32, 9, stride=4> = load %8
+    ret %14
   }
 }
 )";
@@ -2359,58 +2406,22 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {
   $B3: {
-    %11:ptr<function, array<u32, 4>, read_write> = var undef
-    loop [i: $B4, b: $B5, c: $B6] {  # loop_1
-      $B4: {  # initializer
-        next_iteration 0u  # -> $B5
-      }
-      $B5 (%idx:u32): {  # body
-        %13:bool = gte %idx, 4u
-        if %13 [t: $B7] {  # if_1
-          $B7: {  # true
-            exit_loop  # loop_1
-          }
-        }
-        %14:u32 = access %tint_source, %idx
-        %15:ptr<function, u32, read_write> = access %11, %idx
-        store %15, %14
-        continue  # -> $B6
-      }
-      $B6: {  # continuing
-        %16:u32 = add %idx, 1u
-        next_iteration %16  # -> $B5
-      }
-    }
-    %17:array<u32, 4> = load %11
-    ret %17
+    %11:u32 = access %tint_source, 0u
+    %12:u32 = access %tint_source, 1u
+    %13:u32 = access %tint_source, 2u
+    %14:u32 = access %tint_source, 3u
+    %15:array<u32, 4> = construct %11, %12, %13, %14
+    ret %15
   }
 }
 %tint_convert_explicit_layout_1 = func(%tint_source_1:array<u32, 4>):spirv.explicit_layout_array<u32, 4, stride=4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
-  $B8: {
-    %19:ptr<function, spirv.explicit_layout_array<u32, 4, stride=4>, read_write> = var undef
-    loop [i: $B9, b: $B10, c: $B11] {  # loop_2
-      $B9: {  # initializer
-        next_iteration 0u  # -> $B10
-      }
-      $B10 (%idx_1:u32): {  # body
-        %21:bool = gte %idx_1, 4u
-        if %21 [t: $B12] {  # if_2
-          $B12: {  # true
-            exit_loop  # loop_2
-          }
-        }
-        %22:u32 = access %tint_source_1, %idx_1
-        %23:ptr<function, u32, read_write> = access %19, %idx_1
-        store %23, %22
-        continue  # -> $B11
-      }
-      $B11: {  # continuing
-        %24:u32 = add %idx_1, 1u
-        next_iteration %24  # -> $B10
-      }
-    }
-    %25:spirv.explicit_layout_array<u32, 4, stride=4> = load %19
-    ret %25
+  $B4: {
+    %17:u32 = access %tint_source_1, 0u
+    %18:u32 = access %tint_source_1, 1u
+    %19:u32 = access %tint_source_1, 2u
+    %20:u32 = access %tint_source_1, 3u
+    %21:spirv.explicit_layout_array<u32, 4, stride=4> = construct %17, %18, %19, %20
+    ret %21
   }
 }
 )";
@@ -2526,58 +2537,22 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {
   $B3: {
-    %12:ptr<function, array<u32, 4>, read_write> = var undef
-    loop [i: $B4, b: $B5, c: $B6] {  # loop_1
-      $B4: {  # initializer
-        next_iteration 0u  # -> $B5
-      }
-      $B5 (%idx:u32): {  # body
-        %14:bool = gte %idx, 4u
-        if %14 [t: $B7] {  # if_1
-          $B7: {  # true
-            exit_loop  # loop_1
-          }
-        }
-        %15:u32 = access %tint_source, %idx
-        %16:ptr<function, u32, read_write> = access %12, %idx
-        store %16, %15
-        continue  # -> $B6
-      }
-      $B6: {  # continuing
-        %17:u32 = add %idx, 1u
-        next_iteration %17  # -> $B5
-      }
-    }
-    %18:array<u32, 4> = load %12
-    ret %18
+    %12:u32 = access %tint_source, 0u
+    %13:u32 = access %tint_source, 1u
+    %14:u32 = access %tint_source, 2u
+    %15:u32 = access %tint_source, 3u
+    %16:array<u32, 4> = construct %12, %13, %14, %15
+    ret %16
   }
 }
 %tint_convert_explicit_layout_1 = func(%tint_source_1:array<u32, 4>):spirv.explicit_layout_array<u32, 4, stride=4> {  # %tint_convert_explicit_layout_1: 'tint_convert_explicit_layout', %tint_source_1: 'tint_source'
-  $B8: {
-    %20:ptr<function, spirv.explicit_layout_array<u32, 4, stride=4>, read_write> = var undef
-    loop [i: $B9, b: $B10, c: $B11] {  # loop_2
-      $B9: {  # initializer
-        next_iteration 0u  # -> $B10
-      }
-      $B10 (%idx_1:u32): {  # body
-        %22:bool = gte %idx_1, 4u
-        if %22 [t: $B12] {  # if_2
-          $B12: {  # true
-            exit_loop  # loop_2
-          }
-        }
-        %23:u32 = access %tint_source_1, %idx_1
-        %24:ptr<function, u32, read_write> = access %20, %idx_1
-        store %24, %23
-        continue  # -> $B11
-      }
-      $B11: {  # continuing
-        %25:u32 = add %idx_1, 1u
-        next_iteration %25  # -> $B10
-      }
-    }
-    %26:spirv.explicit_layout_array<u32, 4, stride=4> = load %20
-    ret %26
+  $B4: {
+    %18:u32 = access %tint_source_1, 0u
+    %19:u32 = access %tint_source_1, 1u
+    %20:u32 = access %tint_source_1, 2u
+    %21:u32 = access %tint_source_1, 3u
+    %22:spirv.explicit_layout_array<u32, 4, stride=4> = construct %18, %19, %20, %21
+    ret %22
   }
 }
 )";
@@ -2654,30 +2629,12 @@ $B1: {  # root
 }
 %tint_convert_explicit_layout = func(%tint_source:spirv.explicit_layout_array<u32, 4, stride=4>):array<u32, 4> {
   $B3: {
-    %17:ptr<function, array<u32, 4>, read_write> = var undef
-    loop [i: $B4, b: $B5, c: $B6] {  # loop_1
-      $B4: {  # initializer
-        next_iteration 0u  # -> $B5
-      }
-      $B5 (%idx:u32): {  # body
-        %19:bool = gte %idx, 4u
-        if %19 [t: $B7] {  # if_1
-          $B7: {  # true
-            exit_loop  # loop_1
-          }
-        }
-        %20:u32 = access %tint_source, %idx
-        %21:ptr<function, u32, read_write> = access %17, %idx
-        store %21, %20
-        continue  # -> $B6
-      }
-      $B6: {  # continuing
-        %22:u32 = add %idx, 1u
-        next_iteration %22  # -> $B5
-      }
-    }
-    %23:array<u32, 4> = load %17
-    ret %23
+    %17:u32 = access %tint_source, 0u
+    %18:u32 = access %tint_source, 1u
+    %19:u32 = access %tint_source, 2u
+    %20:u32 = access %tint_source, 3u
+    %21:array<u32, 4> = construct %17, %18, %19, %20
+    ret %21
   }
 }
 )";

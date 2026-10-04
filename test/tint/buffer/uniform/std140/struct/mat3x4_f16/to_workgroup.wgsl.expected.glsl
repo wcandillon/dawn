@@ -35,35 +35,23 @@ S v_9(uint start_byte_offset) {
   return S(v_11, v_12, int(v_14[((v_13 & 15u) >> 2u)]));
 }
 S[4] v_15(uint start_byte_offset) {
-  S a[4] = S[4](S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0), S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0), S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0), S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0));
-  {
-    uint v_16 = 0u;
-    v_16 = 0u;
-    while(true) {
-      uint v_17 = v_16;
-      if ((v_17 >= 4u)) {
-        break;
-      }
-      a[v_17] = v_9((start_byte_offset + (v_17 * 128u)));
-      {
-        v_16 = (v_17 + 1u);
-      }
-    }
-  }
-  return a;
+  S v_16 = v_9(start_byte_offset);
+  S v_17 = v_9((128u + start_byte_offset));
+  S v_18 = v_9((256u + start_byte_offset));
+  return S[4](v_16, v_17, v_18, v_9((384u + start_byte_offset)));
 }
 void f_inner(uint tint_local_index) {
   {
-    uint v_18 = 0u;
-    v_18 = tint_local_index;
+    uint v_19 = 0u;
+    v_19 = tint_local_index;
     while(true) {
-      uint v_19 = v_18;
-      if ((v_19 >= 4u)) {
+      uint v_20 = v_19;
+      if ((v_20 >= 4u)) {
         break;
       }
-      w[v_19] = S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0);
+      w[v_20] = S(0, f16mat3x4(f16vec4(0.0hf), f16vec4(0.0hf), f16vec4(0.0hf)), 0);
       {
-        v_18 = (v_19 + 1u);
+        v_19 = (v_20 + 1u);
       }
     }
   }

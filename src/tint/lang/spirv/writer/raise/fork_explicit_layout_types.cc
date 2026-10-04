@@ -44,6 +44,10 @@ namespace tint::spirv::writer::raise {
 
 namespace {
 
+/// Arrays larger than this will be converted with a loop.
+/// Arrays up to this size will be converted with a sequence of instructions.
+static constexpr uint32_t kMaxSeriallyConvertedArraySize = 8;
+
 /// PIMPL state for the transform.
 struct State {
     /// The IR module.
@@ -352,6 +356,18 @@ struct State {
         // pipeline-overrides will already have been substituted before this transform.
         auto* count = src_array->Count()->As<core::type::ConstantArrayCount>();
         TINT_IR_ASSERT(ir, count && count == dst_array->Count());
+
+        // If the element count is below a threshold, convert each element separately and then
+        // reconstruct the target array, instead of emitting a loop that writes to a local variable.
+        if (count->value <= kMaxSeriallyConvertedArraySize) {
+            Vector<core::ir::Value*, kMaxSeriallyConvertedArraySize> construct_args;
+            for (uint32_t i = 0; i < count->value; i++) {
+                auto* extracted = b.Access(src_array->ElemType(), input, u32(i));
+                auto* converted = ConvertIfNeeded(dst_array->ElemType(), extracted);
+                construct_args.Push(converted);
+            }
+            return b.Construct(dst_array, std::move(construct_args));
+        }
 
         // Create a local variable to hold the converted result.
         // Convert each element one at a time, writing into the local variable.

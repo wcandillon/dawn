@@ -31,32 +31,20 @@ S v_4(uint start_byte_offset) {
 
 typedef S ary_ret[4];
 ary_ret v_9(uint start_byte_offset) {
-  S a[4] = (S[4])0;
-  {
-    uint v_10 = 0u;
-    v_10 = 0u;
-    while(true) {
-      uint v_11 = v_10;
-      if ((v_11 >= 4u)) {
-        break;
-      }
-      S v_12 = v_4((start_byte_offset + (v_11 * 128u)));
-      a[v_11] = v_12;
-      {
-        v_10 = (v_11 + 1u);
-      }
-    }
-  }
-  S v_13[4] = a;
-  return v_13;
+  S v_10 = v_4(start_byte_offset);
+  S v_11 = v_4((128u + start_byte_offset));
+  S v_12 = v_4((256u + start_byte_offset));
+  S v_13 = v_4((384u + start_byte_offset));
+  S v_14[4] = {v_10, v_11, v_12, v_13};
+  return v_14;
 }
 
 [numthreads(1, 1, 1)]
 void f() {
-  S v_14[4] = v_9(0u);
-  p = v_14;
-  S v_15 = v_4(256u);
-  p[int(1)] = v_15;
+  S v_15[4] = v_9(0u);
+  p = v_15;
+  S v_16 = v_4(256u);
+  p[int(1)] = v_16;
   p[int(3)].m = v_1(260u);
   p[int(1)].m[int(0)] = tint_bitcast_to_f16(u[0u].z).yx;
 }

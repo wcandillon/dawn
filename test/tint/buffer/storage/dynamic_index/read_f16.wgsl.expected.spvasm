@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.3
 ; Generator: Google Tint Compiler; 1
-; Bound: 622
+; Bound: 587
 ; Schema: 0
                OpCapability Shader
                OpCapability Float16
@@ -320,16 +320,7 @@
 %half_0x1_ffcp_15 = OpConstant %half 0x1.ffcp+15
         %571 = OpTypeFunction %void
         %576 = OpTypeFunction %_arr_v3float_uint_2_0 %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2 = OpTypePointer Function %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2_0 = OpTypePointer Function %_arr_v3float_uint_2_0
-        %582 = OpConstantNull %_arr_v3float_uint_2_0
-       %bool = OpTypeBool
-%_ptr_Function_v3float = OpTypePointer Function %v3float
-        %600 = OpTypeFunction %_arr_mat4v2half_uint_2_0 %_arr_mat4v2half_uint_2
-%_ptr_Function__arr_mat4v2half_uint_2 = OpTypePointer Function %_arr_mat4v2half_uint_2
-%_ptr_Function__arr_mat4v2half_uint_2_0 = OpTypePointer Function %_arr_mat4v2half_uint_2_0
-        %606 = OpConstantNull %_arr_mat4v2half_uint_2_0
-%_ptr_Function_mat4v2half = OpTypePointer Function %mat4v2half
+        %582 = OpTypeFunction %_arr_mat4v2half_uint_2_0 %_arr_mat4v2half_uint_2
  %main_inner = OpFunction %void None %51
         %idx = OpFunctionParameter %uint
          %52 = OpLabel
@@ -782,64 +773,16 @@
 %tint_convert_explicit_layout = OpFunction %_arr_v3float_uint_2_0 None %576
 %tint_source = OpFunctionParameter %_arr_v3float_uint_2
         %577 = OpLabel
-        %578 = OpVariable %_ptr_Function__arr_v3float_uint_2 Function
-        %580 = OpVariable %_ptr_Function__arr_v3float_uint_2_0 Function %582
-               OpStore %578 %tint_source
-               OpBranch %583
-        %583 = OpLabel
-               OpBranch %586
-        %586 = OpLabel
-        %588 = OpPhi %uint %uint_0 %583 %589 %585
-               OpLoopMerge %587 %585 None
-               OpBranch %584
-        %584 = OpLabel
-        %591 = OpUGreaterThanEqual %bool %588 %uint_2
-               OpSelectionMerge %593 None
-               OpBranchConditional %591 %594 %593
-        %594 = OpLabel
-               OpBranch %587
-        %593 = OpLabel
-        %595 = OpAccessChain %_ptr_Function_v3float %578 %588
-        %597 = OpLoad %v3float %595 None
-        %598 = OpAccessChain %_ptr_Function_v3float %580 %588
-               OpStore %598 %597 None
-               OpBranch %585
-        %585 = OpLabel
-        %589 = OpIAdd %uint %588 %uint_1
-               OpBranch %586
-        %587 = OpLabel
-        %590 = OpLoad %_arr_v3float_uint_2_0 %580 None
-               OpReturnValue %590
+        %578 = OpCompositeExtract %v3float %tint_source 0
+        %579 = OpCompositeExtract %v3float %tint_source 1
+        %580 = OpCompositeConstruct %_arr_v3float_uint_2_0 %578 %579
+               OpReturnValue %580
                OpFunctionEnd
-%tint_convert_explicit_layout_0 = OpFunction %_arr_mat4v2half_uint_2_0 None %600
+%tint_convert_explicit_layout_0 = OpFunction %_arr_mat4v2half_uint_2_0 None %582
 %tint_source_0 = OpFunctionParameter %_arr_mat4v2half_uint_2
-        %601 = OpLabel
-        %602 = OpVariable %_ptr_Function__arr_mat4v2half_uint_2 Function
-        %604 = OpVariable %_ptr_Function__arr_mat4v2half_uint_2_0 Function %606
-               OpStore %602 %tint_source_0
-               OpBranch %607
-        %607 = OpLabel
-               OpBranch %610
-        %610 = OpLabel
-        %612 = OpPhi %uint %uint_0 %607 %613 %609
-               OpLoopMerge %611 %609 None
-               OpBranch %608
-        %608 = OpLabel
-        %615 = OpUGreaterThanEqual %bool %612 %uint_2
-               OpSelectionMerge %616 None
-               OpBranchConditional %615 %617 %616
-        %617 = OpLabel
-               OpBranch %611
-        %616 = OpLabel
-        %618 = OpAccessChain %_ptr_Function_mat4v2half %602 %612
-        %620 = OpLoad %mat4v2half %618 None
-        %621 = OpAccessChain %_ptr_Function_mat4v2half %604 %612
-               OpStore %621 %620 None
-               OpBranch %609
-        %609 = OpLabel
-        %613 = OpIAdd %uint %612 %uint_1
-               OpBranch %610
-        %611 = OpLabel
-        %614 = OpLoad %_arr_mat4v2half_uint_2_0 %604 None
-               OpReturnValue %614
+        %583 = OpLabel
+        %584 = OpCompositeExtract %mat4v2half %tint_source_0 0
+        %585 = OpCompositeExtract %mat4v2half %tint_source_0 1
+        %586 = OpCompositeConstruct %_arr_mat4v2half_uint_2_0 %584 %585
+               OpReturnValue %586
                OpFunctionEnd

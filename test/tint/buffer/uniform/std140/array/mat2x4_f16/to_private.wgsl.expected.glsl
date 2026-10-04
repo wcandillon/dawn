@@ -24,29 +24,17 @@ f16mat2x4 v_2(uint start_byte_offset) {
   return f16mat2x4(v_4, tint_bitcast_to_16bit_1(mix(v_6.xy, v_6.zw, bvec2((((v_5 & 15u) >> 2u) == 2u)))));
 }
 f16mat2x4[4] v_7(uint start_byte_offset) {
-  f16mat2x4 a[4] = f16mat2x4[4](f16mat2x4(f16vec4(0.0hf), f16vec4(0.0hf)), f16mat2x4(f16vec4(0.0hf), f16vec4(0.0hf)), f16mat2x4(f16vec4(0.0hf), f16vec4(0.0hf)), f16mat2x4(f16vec4(0.0hf), f16vec4(0.0hf)));
-  {
-    uint v_8 = 0u;
-    v_8 = 0u;
-    while(true) {
-      uint v_9 = v_8;
-      if ((v_9 >= 4u)) {
-        break;
-      }
-      a[v_9] = v_2((start_byte_offset + (v_9 * 16u)));
-      {
-        v_8 = (v_9 + 1u);
-      }
-    }
-  }
-  return a;
+  f16mat2x4 v_8 = v_2(start_byte_offset);
+  f16mat2x4 v_9 = v_2((16u + start_byte_offset));
+  f16mat2x4 v_10 = v_2((32u + start_byte_offset));
+  return f16mat2x4[4](v_8, v_9, v_10, v_2((48u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
   p = v_7(0u);
   p[1] = v_2(32u);
   p[1][0] = tint_bitcast_to_16bit_1(v.inner[0u].zw).ywxz;
-  uvec4 v_10 = v.inner[0u];
-  p[1][0].x = tint_bitcast_to_16bit(v_10.z).x;
+  uvec4 v_11 = v.inner[0u];
+  p[1][0].x = tint_bitcast_to_16bit(v_11.z).x;
   v_1.inner = p[1][0].x;
 }

@@ -119,64 +119,49 @@ ary_ret_1 v_17(uint offset) {
 
 typedef int4 ary_ret_2[4];
 ary_ret_2 v_21(uint start_byte_offset) {
-  int4 a[4] = (int4[4])0;
-  {
-    uint v_22 = 0u;
-    v_22 = 0u;
-    while(true) {
-      uint v_23 = v_22;
-      if ((v_23 >= 4u)) {
-        break;
-      }
-      a[v_23] = asint(src_uniform[((start_byte_offset + (v_23 * 16u)) / 16u)]);
-      {
-        v_22 = (v_23 + 1u);
-      }
-    }
-  }
-  int4 v_24[4] = a;
-  return v_24;
+  int4 v_22[4] = {asint(src_uniform[(start_byte_offset / 16u)]), asint(src_uniform[((16u + start_byte_offset) / 16u)]), asint(src_uniform[((32u + start_byte_offset) / 16u)]), asint(src_uniform[((48u + start_byte_offset) / 16u)])};
+  return v_22;
 }
 
 void foo(int4 src_param[4]) {
   int4 src_function[4] = (int4[4])0;
-  int4 v_25[4] = {(int(1)).xxxx, (int(2)).xxxx, (int(3)).xxxx, (int(3)).xxxx};
-  v_14(0u, v_25);
+  int4 v_23[4] = {(int(1)).xxxx, (int(2)).xxxx, (int(3)).xxxx, (int(3)).xxxx};
+  v_14(0u, v_23);
   v_14(0u, src_param);
-  int4 v_26[4] = ret_arr();
-  v_14(0u, v_26);
+  int4 v_24[4] = ret_arr();
+  v_14(0u, v_24);
   int4 src_let[4] = (int4[4])0;
   v_14(0u, src_let);
-  int4 v_27[4] = src_function;
+  int4 v_25[4] = src_function;
+  v_14(0u, v_25);
+  int4 v_26[4] = src_private;
+  v_14(0u, v_26);
+  int4 v_27[4] = src_workgroup;
   v_14(0u, v_27);
-  int4 v_28[4] = src_private;
-  v_14(0u, v_28);
-  int4 v_29[4] = src_workgroup;
+  S v_28 = ret_struct_arr();
+  int4 v_29[4] = v_28.arr;
   v_14(0u, v_29);
-  S v_30 = ret_struct_arr();
-  int4 v_31[4] = v_30.arr;
+  int4 v_30[4] = v_21(0u);
+  v_14(0u, v_30);
+  int4 v_31[4] = v_17(0u);
   v_14(0u, v_31);
-  int4 v_32[4] = v_21(0u);
-  v_14(0u, v_32);
-  int4 v_33[4] = v_17(0u);
-  v_14(0u, v_33);
   int src_nested[4][3][2] = (int[4][3][2])0;
-  int v_34[4][3][2] = src_nested;
-  v_10(0u, v_34);
+  int v_32[4][3][2] = src_nested;
+  v_10(0u, v_32);
 }
 
 void main_inner(uint tint_local_index) {
   {
-    uint v_35 = 0u;
-    v_35 = tint_local_index;
+    uint v_33 = 0u;
+    v_33 = tint_local_index;
     while(true) {
-      uint v_36 = v_35;
-      if ((v_36 >= 4u)) {
+      uint v_34 = v_33;
+      if ((v_34 >= 4u)) {
         break;
       }
-      src_workgroup[v_36] = (int(0)).xxxx;
+      src_workgroup[v_34] = (int(0)).xxxx;
       {
-        v_35 = (v_36 + 1u);
+        v_33 = (v_34 + 1u);
       }
     }
   }

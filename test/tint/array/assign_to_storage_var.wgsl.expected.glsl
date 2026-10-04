@@ -34,22 +34,10 @@ S ret_struct_arr() {
   return S(ivec4[4](ivec4(0), ivec4(0), ivec4(0), ivec4(0)));
 }
 ivec4[4] v_4(uint start_byte_offset) {
-  ivec4 a[4] = ivec4[4](ivec4(0), ivec4(0), ivec4(0), ivec4(0));
-  {
-    uint v_5 = 0u;
-    v_5 = 0u;
-    while(true) {
-      uint v_6 = v_5;
-      if ((v_6 >= 4u)) {
-        break;
-      }
-      a[v_6] = ivec4(v.inner[((start_byte_offset + (v_6 * 16u)) / 16u)]);
-      {
-        v_5 = (v_6 + 1u);
-      }
-    }
-  }
-  return a;
+  ivec4 v_5 = ivec4(v.inner[(start_byte_offset / 16u)]);
+  ivec4 v_6 = ivec4(v.inner[((16u + start_byte_offset) / 16u)]);
+  ivec4 v_7 = ivec4(v.inner[((32u + start_byte_offset) / 16u)]);
+  return ivec4[4](v_5, v_6, v_7, ivec4(v.inner[((48u + start_byte_offset) / 16u)]));
 }
 void foo(ivec4 src_param[4]) {
   ivec4 src_function[4] = ivec4[4](ivec4(0), ivec4(0), ivec4(0), ivec4(0));
@@ -69,16 +57,16 @@ void foo(ivec4 src_param[4]) {
 }
 void main_inner(uint tint_local_index) {
   {
-    uint v_7 = 0u;
-    v_7 = tint_local_index;
+    uint v_8 = 0u;
+    v_8 = tint_local_index;
     while(true) {
-      uint v_8 = v_7;
-      if ((v_8 >= 4u)) {
+      uint v_9 = v_8;
+      if ((v_9 >= 4u)) {
         break;
       }
-      src_workgroup[v_8] = ivec4(0);
+      src_workgroup[v_9] = ivec4(0);
       {
-        v_7 = (v_8 + 1u);
+        v_8 = (v_9 + 1u);
       }
     }
   }

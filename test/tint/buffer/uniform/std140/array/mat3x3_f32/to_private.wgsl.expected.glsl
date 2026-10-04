@@ -13,29 +13,17 @@ mat3 v_2(uint start_byte_offset) {
   return mat3(uintBitsToFloat(v.inner[(start_byte_offset / 16u)].xyz), uintBitsToFloat(v.inner[((16u + start_byte_offset) / 16u)].xyz), uintBitsToFloat(v.inner[((32u + start_byte_offset) / 16u)].xyz));
 }
 mat3[4] v_3(uint start_byte_offset) {
-  mat3 a[4] = mat3[4](mat3(vec3(0.0f), vec3(0.0f), vec3(0.0f)), mat3(vec3(0.0f), vec3(0.0f), vec3(0.0f)), mat3(vec3(0.0f), vec3(0.0f), vec3(0.0f)), mat3(vec3(0.0f), vec3(0.0f), vec3(0.0f)));
-  {
-    uint v_4 = 0u;
-    v_4 = 0u;
-    while(true) {
-      uint v_5 = v_4;
-      if ((v_5 >= 4u)) {
-        break;
-      }
-      a[v_5] = v_2((start_byte_offset + (v_5 * 48u)));
-      {
-        v_4 = (v_5 + 1u);
-      }
-    }
-  }
-  return a;
+  mat3 v_4 = v_2(start_byte_offset);
+  mat3 v_5 = v_2((48u + start_byte_offset));
+  mat3 v_6 = v_2((96u + start_byte_offset));
+  return mat3[4](v_4, v_5, v_6, v_2((144u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
   p = v_3(0u);
   p[1] = v_2(96u);
   p[1][0] = uintBitsToFloat(v.inner[1u].xyz).zxy;
-  uvec4 v_6 = v.inner[1u];
-  p[1][0].x = uintBitsToFloat(v_6.x);
+  uvec4 v_7 = v.inner[1u];
+  p[1][0].x = uintBitsToFloat(v_7.x);
   v_1.inner = p[1][0].x;
 }

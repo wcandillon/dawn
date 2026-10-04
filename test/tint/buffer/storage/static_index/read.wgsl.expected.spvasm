@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.3
 ; Generator: Google Tint Compiler; 1
-; Bound: 327
+; Bound: 294
 ; Schema: 0
                OpCapability Shader
         %276 = OpExtInstImport "GLSL.std.450"
@@ -215,16 +215,7 @@
 %float_n2_14748365e_09 = OpConstant %float -2.14748365e+09
 %float_2_14748352e_09 = OpConstant %float 2.14748352e+09
         %281 = OpTypeFunction %_arr_v3float_uint_2_0 %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2 = OpTypePointer Function %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2_0 = OpTypePointer Function %_arr_v3float_uint_2_0
-        %287 = OpConstantNull %_arr_v3float_uint_2_0
-       %bool = OpTypeBool
-%_ptr_Function_v3float = OpTypePointer Function %v3float
-        %305 = OpTypeFunction %_arr_Inner_uint_4_0 %_arr_Inner_uint_4
-%_ptr_Function__arr_Inner_uint_4 = OpTypePointer Function %_arr_Inner_uint_4
-%_ptr_Function__arr_Inner_uint_4_0 = OpTypePointer Function %_arr_Inner_uint_4_0
-        %311 = OpConstantNull %_arr_Inner_uint_4_0
-%_ptr_Function_Inner = OpTypePointer Function %Inner
+        %287 = OpTypeFunction %_arr_Inner_uint_4_0 %_arr_Inner_uint_4
        %main = OpFunction %void None %36
          %37 = OpLabel
          %38 = OpAccessChain %_ptr_StorageBuffer_float %1 %uint_0 %uint_0
@@ -422,64 +413,18 @@
 %tint_convert_explicit_layout = OpFunction %_arr_v3float_uint_2_0 None %281
 %tint_source = OpFunctionParameter %_arr_v3float_uint_2
         %282 = OpLabel
-        %283 = OpVariable %_ptr_Function__arr_v3float_uint_2 Function
-        %285 = OpVariable %_ptr_Function__arr_v3float_uint_2_0 Function %287
-               OpStore %283 %tint_source
-               OpBranch %288
-        %288 = OpLabel
-               OpBranch %291
-        %291 = OpLabel
-        %293 = OpPhi %uint %uint_0 %288 %294 %290
-               OpLoopMerge %292 %290 None
-               OpBranch %289
-        %289 = OpLabel
-        %296 = OpUGreaterThanEqual %bool %293 %uint_2
-               OpSelectionMerge %298 None
-               OpBranchConditional %296 %299 %298
-        %299 = OpLabel
-               OpBranch %292
-        %298 = OpLabel
-        %300 = OpAccessChain %_ptr_Function_v3float %283 %293
-        %302 = OpLoad %v3float %300 None
-        %303 = OpAccessChain %_ptr_Function_v3float %285 %293
-               OpStore %303 %302 None
-               OpBranch %290
-        %290 = OpLabel
-        %294 = OpIAdd %uint %293 %uint_1
-               OpBranch %291
-        %292 = OpLabel
-        %295 = OpLoad %_arr_v3float_uint_2_0 %285 None
-               OpReturnValue %295
+        %283 = OpCompositeExtract %v3float %tint_source 0
+        %284 = OpCompositeExtract %v3float %tint_source 1
+        %285 = OpCompositeConstruct %_arr_v3float_uint_2_0 %283 %284
+               OpReturnValue %285
                OpFunctionEnd
-%tint_convert_explicit_layout_0 = OpFunction %_arr_Inner_uint_4_0 None %305
+%tint_convert_explicit_layout_0 = OpFunction %_arr_Inner_uint_4_0 None %287
 %tint_source_0 = OpFunctionParameter %_arr_Inner_uint_4
-        %306 = OpLabel
-        %307 = OpVariable %_ptr_Function__arr_Inner_uint_4 Function
-        %309 = OpVariable %_ptr_Function__arr_Inner_uint_4_0 Function %311
-               OpStore %307 %tint_source_0
-               OpBranch %312
-        %312 = OpLabel
-               OpBranch %315
-        %315 = OpLabel
-        %317 = OpPhi %uint %uint_0 %312 %318 %314
-               OpLoopMerge %316 %314 None
-               OpBranch %313
-        %313 = OpLabel
-        %320 = OpUGreaterThanEqual %bool %317 %uint_4
-               OpSelectionMerge %321 None
-               OpBranchConditional %320 %322 %321
-        %322 = OpLabel
-               OpBranch %316
-        %321 = OpLabel
-        %323 = OpAccessChain %_ptr_Function_Inner %307 %317
-        %325 = OpLoad %Inner %323 None
-        %326 = OpAccessChain %_ptr_Function_Inner %309 %317
-               OpStore %326 %325 None
-               OpBranch %314
-        %314 = OpLabel
-        %318 = OpIAdd %uint %317 %uint_1
-               OpBranch %315
-        %316 = OpLabel
-        %319 = OpLoad %_arr_Inner_uint_4_0 %309 None
-               OpReturnValue %319
+        %288 = OpLabel
+        %289 = OpCompositeExtract %Inner %tint_source_0 0
+        %290 = OpCompositeExtract %Inner %tint_source_0 1
+        %291 = OpCompositeExtract %Inner %tint_source_0 2
+        %292 = OpCompositeExtract %Inner %tint_source_0 3
+        %293 = OpCompositeConstruct %_arr_Inner_uint_4_0 %289 %290 %291 %292
+               OpReturnValue %293
                OpFunctionEnd

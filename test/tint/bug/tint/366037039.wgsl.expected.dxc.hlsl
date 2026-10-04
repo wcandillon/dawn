@@ -69,32 +69,17 @@ S v_9(uint offset) {
 
 typedef uint3 ary_ret_1[4];
 ary_ret_1 v_14(uint start_byte_offset) {
-  uint3 a[4] = (uint3[4])0;
-  {
-    uint v_15 = 0u;
-    v_15 = 0u;
-    while(true) {
-      uint v_16 = v_15;
-      if ((v_16 >= 4u)) {
-        break;
-      }
-      a[v_16] = ubuffer[((start_byte_offset + (v_16 * 16u)) / 16u)].xyz;
-      {
-        v_15 = (v_16 + 1u);
-      }
-    }
-  }
-  uint3 v_17[4] = a;
-  return v_17;
+  uint3 v_15[4] = {ubuffer[(start_byte_offset / 16u)].xyz, ubuffer[((16u + start_byte_offset) / 16u)].xyz, ubuffer[((32u + start_byte_offset) / 16u)].xyz, ubuffer[((48u + start_byte_offset) / 16u)].xyz};
+  return v_15;
 }
 
-S v_18(uint start_byte_offset) {
-  uint3 v_19 = ubuffer[(start_byte_offset / 16u)].xyz;
-  uint v_20 = (12u + start_byte_offset);
-  uint v_21 = ubuffer[(v_20 / 16u)][((v_20 & 15u) >> 2u)];
-  uint3 v_22[4] = v_14((16u + start_byte_offset));
-  S v_23 = {v_19, v_21, v_22};
-  return v_23;
+S v_16(uint start_byte_offset) {
+  uint3 v_17 = ubuffer[(start_byte_offset / 16u)].xyz;
+  uint v_18 = (12u + start_byte_offset);
+  uint v_19 = ubuffer[(v_18 / 16u)][((v_18 & 15u) >> 2u)];
+  uint3 v_20[4] = v_14((16u + start_byte_offset));
+  S v_21 = {v_17, v_19, v_20};
+  return v_21;
 }
 
 void foo_inner(uint tint_local_index) {
@@ -103,26 +88,26 @@ void foo_inner(uint tint_local_index) {
     wbuffer.b = 0u;
   }
   {
-    uint v_24 = 0u;
-    v_24 = tint_local_index;
+    uint v_22 = 0u;
+    v_22 = tint_local_index;
     while(true) {
-      uint v_25 = v_24;
-      if ((v_25 >= 4u)) {
+      uint v_23 = v_22;
+      if ((v_23 >= 4u)) {
         break;
       }
-      wbuffer.c[v_25] = (0u).xxx;
+      wbuffer.c[v_23] = (0u).xxx;
       {
-        v_24 = (v_25 + 1u);
+        v_22 = (v_23 + 1u);
       }
     }
   }
   GroupMemoryBarrierWithGroupSync();
-  S u = v_18(0u);
+  S u = v_16(0u);
   S s = v_9(0u);
   S w = v_9(0u);
-  S v_26 = (S)0;
-  v_3(0u, v_26);
-  wbuffer = v_26;
+  S v_24 = (S)0;
+  v_3(0u, v_24);
+  wbuffer = v_24;
 }
 
 [numthreads(1, 1, 1)]

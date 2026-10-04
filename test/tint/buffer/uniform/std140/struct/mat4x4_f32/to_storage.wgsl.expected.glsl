@@ -68,22 +68,10 @@ void tint_store_and_preserve_padding(S value_param[4]) {
   }
 }
 S[4] v_11(uint start_byte_offset) {
-  S a[4] = S[4](S(0, 0u, 0u, 0u, mat4(vec4(0.0f), vec4(0.0f), vec4(0.0f), vec4(0.0f)), tint_pad16_init, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, 0u, 0u, 0u, mat4(vec4(0.0f), vec4(0.0f), vec4(0.0f), vec4(0.0f)), tint_pad16_init, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, 0u, 0u, 0u, mat4(vec4(0.0f), vec4(0.0f), vec4(0.0f), vec4(0.0f)), tint_pad16_init, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init), S(0, 0u, 0u, 0u, mat4(vec4(0.0f), vec4(0.0f), vec4(0.0f), vec4(0.0f)), tint_pad16_init, tint_pad16_init, tint_pad16_init, 0, 0u, 0u, 0u, tint_pad16_init, tint_pad16_init, tint_pad16_init));
-  {
-    uint v_12 = 0u;
-    v_12 = 0u;
-    while(true) {
-      uint v_13 = v_12;
-      if ((v_13 >= 4u)) {
-        break;
-      }
-      a[v_13] = v_3((start_byte_offset + (v_13 * 192u)));
-      {
-        v_12 = (v_13 + 1u);
-      }
-    }
-  }
-  return a;
+  S v_12 = v_3(start_byte_offset);
+  S v_13 = v_3((192u + start_byte_offset));
+  S v_14 = v_3((384u + start_byte_offset));
+  return S[4](v_12, v_13, v_14, v_3((576u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {

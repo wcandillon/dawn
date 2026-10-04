@@ -51,28 +51,16 @@ void tint_store_and_preserve_padding(f16mat4x3 value_param[4]) {
   }
 }
 f16mat4x3[4] v_15(uint start_byte_offset) {
-  f16mat4x3 a[4] = f16mat4x3[4](f16mat4x3(f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf)), f16mat4x3(f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf)), f16mat4x3(f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf)), f16mat4x3(f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf), f16vec3(0.0hf)));
-  {
-    uint v_16 = 0u;
-    v_16 = 0u;
-    while(true) {
-      uint v_17 = v_16;
-      if ((v_17 >= 4u)) {
-        break;
-      }
-      a[v_17] = v_2((start_byte_offset + (v_17 * 32u)));
-      {
-        v_16 = (v_17 + 1u);
-      }
-    }
-  }
-  return a;
+  f16mat4x3 v_16 = v_2(start_byte_offset);
+  f16mat4x3 v_17 = v_2((32u + start_byte_offset));
+  f16mat4x3 v_18 = v_2((64u + start_byte_offset));
+  return f16mat4x3[4](v_16, v_17, v_18, v_2((96u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
   tint_store_and_preserve_padding(v_15(0u));
   tint_store_and_preserve_padding_1(uint[1](1u), v_2(64u));
   v_1.inner[1][0] = tint_bitcast_to_16bit_1(v.inner[0u].zw).xyz.zxy;
-  uvec4 v_18 = v.inner[0u];
-  v_1.inner[1][0].x = tint_bitcast_to_16bit(v_18.z).x;
+  uvec4 v_19 = v.inner[0u];
+  v_1.inner[1][0].x = tint_bitcast_to_16bit(v_19.z).x;
 }

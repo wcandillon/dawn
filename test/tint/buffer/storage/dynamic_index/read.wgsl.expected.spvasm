@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.3
 ; Generator: Google Tint Compiler; 1
-; Bound: 379
+; Bound: 361
 ; Schema: 0
                OpCapability Shader
          %46 = OpExtInstImport "GLSL.std.450"
@@ -205,11 +205,6 @@
 %float_2_14748352e_09 = OpConstant %float 2.14748352e+09
         %351 = OpTypeFunction %void
         %356 = OpTypeFunction %_arr_v3float_uint_2_0 %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2 = OpTypePointer Function %_arr_v3float_uint_2
-%_ptr_Function__arr_v3float_uint_2_0 = OpTypePointer Function %_arr_v3float_uint_2_0
-        %362 = OpConstantNull %_arr_v3float_uint_2_0
-       %bool = OpTypeBool
-%_ptr_Function_v3float = OpTypePointer Function %v3float
  %main_inner = OpFunction %void None %37
         %idx = OpFunctionParameter %uint
          %38 = OpLabel
@@ -487,32 +482,8 @@
 %tint_convert_explicit_layout = OpFunction %_arr_v3float_uint_2_0 None %356
 %tint_source = OpFunctionParameter %_arr_v3float_uint_2
         %357 = OpLabel
-        %358 = OpVariable %_ptr_Function__arr_v3float_uint_2 Function
-        %360 = OpVariable %_ptr_Function__arr_v3float_uint_2_0 Function %362
-               OpStore %358 %tint_source
-               OpBranch %363
-        %363 = OpLabel
-               OpBranch %366
-        %366 = OpLabel
-        %368 = OpPhi %uint %uint_0 %363 %369 %365
-               OpLoopMerge %367 %365 None
-               OpBranch %364
-        %364 = OpLabel
-        %371 = OpUGreaterThanEqual %bool %368 %uint_2
-               OpSelectionMerge %373 None
-               OpBranchConditional %371 %374 %373
-        %374 = OpLabel
-               OpBranch %367
-        %373 = OpLabel
-        %375 = OpAccessChain %_ptr_Function_v3float %358 %368
-        %377 = OpLoad %v3float %375 None
-        %378 = OpAccessChain %_ptr_Function_v3float %360 %368
-               OpStore %378 %377 None
-               OpBranch %365
-        %365 = OpLabel
-        %369 = OpIAdd %uint %368 %uint_1
-               OpBranch %366
-        %367 = OpLabel
-        %370 = OpLoad %_arr_v3float_uint_2_0 %360 None
-               OpReturnValue %370
+        %358 = OpCompositeExtract %v3float %tint_source 0
+        %359 = OpCompositeExtract %v3float %tint_source 1
+        %360 = OpCompositeConstruct %_arr_v3float_uint_2_0 %358 %359
+               OpReturnValue %360
                OpFunctionEnd

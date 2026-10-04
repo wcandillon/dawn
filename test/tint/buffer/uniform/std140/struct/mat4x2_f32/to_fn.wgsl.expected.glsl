@@ -43,22 +43,10 @@ S v_13(uint start_byte_offset) {
   return S(v_15, v_16, int(v_18[((v_17 & 15u) >> 2u)]));
 }
 S[4] v_19(uint start_byte_offset) {
-  S a_2[4] = S[4](S(0, mat4x2(vec2(0.0f), vec2(0.0f), vec2(0.0f), vec2(0.0f)), 0), S(0, mat4x2(vec2(0.0f), vec2(0.0f), vec2(0.0f), vec2(0.0f)), 0), S(0, mat4x2(vec2(0.0f), vec2(0.0f), vec2(0.0f), vec2(0.0f)), 0), S(0, mat4x2(vec2(0.0f), vec2(0.0f), vec2(0.0f), vec2(0.0f)), 0));
-  {
-    uint v_20 = 0u;
-    v_20 = 0u;
-    while(true) {
-      uint v_21 = v_20;
-      if ((v_21 >= 4u)) {
-        break;
-      }
-      a_2[v_21] = v_13((start_byte_offset + (v_21 * 128u)));
-      {
-        v_20 = (v_21 + 1u);
-      }
-    }
-  }
-  return a_2;
+  S v_20 = v_13(start_byte_offset);
+  S v_21 = v_13((128u + start_byte_offset));
+  S v_22 = v_13((256u + start_byte_offset));
+  return S[4](v_20, v_21, v_22, v_13((384u + start_byte_offset)));
 }
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
@@ -66,6 +54,6 @@ void main() {
   b(v_13(256u));
   c(v_2(264u));
   d(uintBitsToFloat(v_1.inner[1u].xy).yx);
-  uvec4 v_22 = v_1.inner[1u];
-  e(uintBitsToFloat(v_22.y));
+  uvec4 v_23 = v_1.inner[1u];
+  e(uintBitsToFloat(v_23.y));
 }

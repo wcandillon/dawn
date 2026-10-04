@@ -40,6 +40,10 @@ namespace {
 using namespace tint::core::fluent_types;     // NOLINT
 using namespace tint::core::number_suffixes;  // NOLINT
 
+/// Arrays larger than this will be loaded with a loop.
+/// Arrays up to this size will be loaded with a sequence of instructions.
+static constexpr uint32_t kMaxSeriallyLoadedArraySize = 8;
+
 /// PIMPL state for the transform.
 ///
 /// Each uniform buffer variable is rewritten so its store type is an array of vec4u
@@ -1262,8 +1266,17 @@ struct State {
         });
     }
 
-    // Creates a load function for the given `var` and `array` combination. Essentially creates
-    // a function similar to:
+    // Creates a load function for the given `var` and `array` combination. If the element count
+    // is below a threshold, each element is loaded separately and the function is similar to:
+    //
+    // fn custom_load_A(offset: u32) {
+    //   let a = load element at (offset + 0 * A->ImplicitStride())
+    //   let b = load element at (offset + 1 * A->ImplicitStride())
+    //   ...
+    //   return A(a, b, ..., z);
+    // }
+    //
+    // Otherwise the elements are loaded in a loop, and the function is similar to:
     //
     // fn custom_load_A(offset: u32) {
     //   A a = A();
@@ -1287,20 +1300,30 @@ struct State {
             fn->SetParams({start_byte_offset});
 
             b.Append(fn->Block(), [&] {
-                auto* result_arr = b.Var<function>("a", b.Zero(arr));
-
                 auto* count = arr->Count()->As<core::type::ConstantArrayCount>();
                 TINT_IR_ASSERT(ir, count);
 
-                b.LoopRange(0_u, u32(count->value), 1_u, [&](core::ir::Value* idx) {
-                    auto* stride = b.Multiply(idx, u32(arr->ImplicitStride()));
-                    OffsetData od{0, {start_byte_offset, stride}};
-                    auto* byte_idx = OffsetToValue(od);
-                    auto* access = b.Access(ty.ptr<function>(arr->ElemType()), result_arr, idx);
-                    b.Store(access, MakeLoad(inst, var, arr->ElemType(), byte_idx));
-                });
-
-                b.Return(fn, b.Load(result_arr));
+                // Load each element of the array in a loop. If the element count is below a
+                // threshold, unroll that loop and construct the array from the loaded elements.
+                if (count->value <= kMaxSeriallyLoadedArraySize) {
+                    Vector<core::ir::Value*, kMaxSeriallyLoadedArraySize> values;
+                    for (uint32_t i = 0; i < count->value; i++) {
+                        OffsetData od{i * arr->ImplicitStride(), {start_byte_offset}};
+                        auto* byte_idx = OffsetToValue(od);
+                        values.Push(MakeLoad(inst, var, arr->ElemType(), byte_idx)->Result());
+                    }
+                    b.Return(fn, b.Construct(arr, values));
+                } else {
+                    auto* result_arr = b.Var<function>("a", b.Zero(arr));
+                    b.LoopRange(0_u, u32(count->value), 1_u, [&](core::ir::Value* idx) {
+                        auto* stride = b.Multiply(idx, u32(arr->ImplicitStride()));
+                        OffsetData od{0, {start_byte_offset, stride}};
+                        auto* byte_idx = OffsetToValue(od);
+                        auto* access = b.Access(ty.ptr<function>(arr->ElemType()), result_arr, idx);
+                        b.Store(access, MakeLoad(inst, var, arr->ElemType(), byte_idx));
+                    });
+                    b.Return(fn, b.Load(result_arr));
+                }
             });
 
             return fn;
